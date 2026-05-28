@@ -88,22 +88,18 @@ public class UserService {
     public void updateUser(Long id, User newUser) {
         repository.findById(id)
                 .map(user -> {
-                    if (newUser.getUsername() != null && !newUser.getUsername().equals(user.getUsername()) &&
+                    if (!newUser.getUsername().equals(user.getUsername()) &&
                             repository.existsByUsername(newUser.getUsername())) {
-                        throw new ResponseStatusException(
-                                HttpStatus.CONFLICT,
-                                "Username '" + newUser.getUsername() + "' is already taken"
-                        );
+                        throw new ResponseStatusException(HttpStatus.CONFLICT,
+                                "Username '" + newUser.getUsername() + "' is already taken");
                     }
-                    if (newUser.getEmail() != null && !newUser.getEmail().equals(user.getEmail()) &&
+                    if (!newUser.getEmail().equals(user.getEmail()) &&
                             repository.existsByEmail(newUser.getEmail())) {
-                        throw new ResponseStatusException(
-                                HttpStatus.CONFLICT,
-                                "Email '" + newUser.getEmail() + "' is already registered"
-                        );
+                        throw new ResponseStatusException(HttpStatus.CONFLICT,
+                                "Email '" + newUser.getEmail() + "' is already registered");
                     }
-                    if (newUser.getUsername() != null) user.setUsername(newUser.getUsername());
-                    if (newUser.getEmail() != null) user.setEmail(newUser.getEmail());
+                    user.setUsername(newUser.getUsername());
+                    user.setEmail(newUser.getEmail());
                     return repository.save(user);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Wybrany użytkownik nie istnieje"));

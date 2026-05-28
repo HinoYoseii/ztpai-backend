@@ -1,19 +1,23 @@
 package pl.edu.pk.projekt.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import pl.edu.pk.projekt.model.Role;
 
 public class UserRequest {
 
-    @NotNull(message = "Username is required")
+    @NotBlank(message = "Username is required")
     @Size(min = 3, max = 30)
     private String username;
 
-    @NotNull(message = "Password is required")
+    @NotBlank(message = "Password is required")
     @Size(min = 6)
     private String password;
-    @NotNull(message = "Email address is required")
+
+    @NotBlank(message = "Email address is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     public String getUsername() {

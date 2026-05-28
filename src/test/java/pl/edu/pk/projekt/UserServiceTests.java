@@ -306,18 +306,18 @@ class UserServiceTest {
         User update = new User();
         update.setUsername("new");
         update.setEmail("new@example.com");
-        update.setPassword("new_raw");
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(passwordEncoder.encode("new_raw")).thenReturn("new_hash");
         when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         userService.updateUser(1L, update);
 
         assertThat(existing.getUsername()).isEqualTo("new");
         assertThat(existing.getEmail()).isEqualTo("new@example.com");
-        assertThat(existing.getPassword()).isEqualTo("new_hash");
+        assertThat(existing.getPassword()).isEqualTo("old_hash");
+
         verify(repository).save(existing);
+        verify(passwordEncoder, never()).encode(any());
     }
 
     @Test
@@ -368,11 +368,9 @@ class UserServiceTest {
         User update = new User();
         update.setUsername("john");
         update.setEmail("new@example.com");
-        update.setPassword("new_password");
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         when(repository.existsByEmail("new@example.com")).thenReturn(false);
-        when(passwordEncoder.encode("new_password")).thenReturn("new_hash");
         when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         userService.updateUser(1L, update);
@@ -422,11 +420,9 @@ class UserServiceTest {
         User update = new User();
         update.setUsername("john_new");
         update.setEmail("john@example.com");
-        update.setPassword("new_password");
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         when(repository.existsByUsername("john_new")).thenReturn(false);
-        when(passwordEncoder.encode("new_password")).thenReturn("new_hash");
         when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         userService.updateUser(1L, update);
